@@ -1,0 +1,466 @@
+var mongoose = require('mongoose');
+var User = require('./Schema/UserSchema.js');
+var Product = require('./Schema/ProductSchema.js')
+
+mongoose.connect("mongodb://localhost/shopping", function () {
+    console.log("db connected");
+    //mongoose.connection.once('connected',()=>{
+    mongoose.connection.db.dropDatabase();
+    //});
+
+    var products = [{
+        "_id": "laptop1",
+        "name": "macbook air",
+        "description": "latest macbbok by apple",
+        "category": "laptop",
+        "image_url": "/images/macbookAir.jpg",
+        "price": 80000,
+        "feedback": [{
+            "comment": "Super laptop",
+            "rating": "4.5",
+            "user_name": "Ganesh",
+            "added_date": "05-08-2017"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Super Deal",
+            "deal_discount": "70"
+        }],
+        "avg_rating": 0
+    },
+
+    {
+        "_id": "laptop2",
+        "name": "Acer Predator",
+        "description": "Limited Edition. Awesome gaming laptop",
+        "category": "laptop",
+        "image_url": "/images/acerPredator.jpg",
+        "price": 600000,
+        "feedback": [{
+            "comment": "WOWSOME",
+            "rating": "5",
+            "user_name": "Sachin",
+            "added_date": "05-17-2017"
+        }],
+        "isDeal": false,
+        "deals": [{
+            "deal_date": "",
+            "deal_name": "",
+            "deal_discount": "0"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "laptop3",
+        "name": "Lenovo Thinkpad",
+        "description": " Approved By NASA for use in space",
+        "category": "laptop",
+        "image_url": "/images/thinkpad.jpg",
+        "price": 55000,
+        "feedback": [{
+            "comment": "Good Laptop",
+            "rating": "4",
+            "user_name": "Shanti",
+            "added_date": "05-01-2017"
+        }],
+        "isDeal": false,
+        "deals": [{
+            "deal_date": "",
+            "deal_name": "",
+            "deal_discount": "0"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "laptop4",
+        "name": "Dell XPS",
+        "description": "Gaming laptop",
+        "category": "laptop",
+        "image_url": "/images/dellXPS.jpg",
+        "price": 45000,
+        "feedback": [{
+            "comment": "High performance laptop",
+            "rating": "3.5",
+            "user_name": "Gopal",
+            "added_date": "05-24-2016"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Power Deal",
+            "deal_discount": "50"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "laptop5",
+        "name": "Samsung",
+        "description": "Budget laptop by samsung",
+        "category": "laptop",
+        "image_url": "/images/samsungLaptop.jpg",
+        "price": 20000,
+        "feedback": [{
+            "comment": "Good in this price",
+            "rating": "3",
+            "user_name": "Hemant",
+            "added_date": "04-21-2017"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Power Deal",
+            "deal_discount": "20"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "laptop6",
+        "name": "HP EliteBook",
+        "description": "latest high end with i7 6th generation CPU. 8 GB RAM",
+        "category": "laptop",
+        "image_url": "/images/elitebook.jpg",
+        "price": 109000,
+        "feedback": [{
+            "comment": "Awesome laptop. ",
+            "rating": "5",
+            "user_name": "Anupam",
+            "added_date": "05-21-2016"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Super Offer",
+            "deal_discount": "80"
+        }],
+        "avg_rating": 0
+    }
+
+
+
+        , {
+        "_id": "phone1",
+        "name": "iPhone 7",
+        "description": "latest phone by apple-2016",
+        "category": "phone",
+        "image_url": "/images/iphone7.jpg",
+        "price": 50000,
+        "feedback": [{
+            "comment": "Super phone",
+            "rating": "4.5",
+            "user_name": "Ganesh",
+            "added_date": "05-18-2017"
+        }],
+        "isDeal": false,
+        "deals": [{
+            "deal_date": "",
+            "deal_name": "",
+            "deal_discount": "0"
+        }],
+        "avg_rating": 0
+    },
+
+    {
+        "_id": "phone2",
+        "name": "Nexus 6",
+        "description": "phone by google- 2014",
+        "category": "phone",
+        "image_url": "/images/nexus6.jpg",
+        "price": 45000,
+        "feedback": [{
+            "comment": "Nice",
+            "rating": "4",
+            "user_name": "Sachin",
+            "added_date": "05-21-2017"
+        }],
+        "isDeal": false,
+        "deals": [{
+            "deal_date": "",
+            "deal_name": "",
+            "deal_discount": "0"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "phone3",
+        "name": "Nexus 6p",
+        "description": " phone by google- 2015",
+        "category": "phone",
+        "image_url": "/images/nexus6p.jpg",
+        "price": 53000,
+        "feedback": [{
+            "comment": "Good phone",
+            "rating": "4",
+            "user_name": "Shanti",
+            "added_date": "01-05-2017"
+        }],
+        "isDeal": false,
+        "deals": [{
+            "deal_date": "",
+            "deal_name": "",
+            "deal_discount": "0"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "phone4",
+        "name": "iphone 6",
+        "description": "best phone by apple- 2015",
+        "category": "phone",
+        "image_url": "/images/iphone6.jpg",
+        "price": 36000,
+        "feedback": [{
+            "comment": "Sold kidney to buy this phone. Awesome",
+            "rating": "2",
+            "user_name": "Gopal",
+            "added_date": "05-24-2016"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Power Deal",
+            "deal_discount": "50"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "phone5",
+        "name": "Samsung s8",
+        "description": "high end phone by samsung",
+        "category": "phone",
+        "image_url": "/images/s8.jpg",
+        "price": 70000,
+        "feedback": [{
+            "comment": "Best phone ever. Bought on Day 1.",
+            "rating": "5",
+            "user_name": "Hemant",
+            "added_date": "04-21-2017"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Power Deal",
+            "deal_discount": "40"
+        }],
+        "avg_rating": 0
+    },
+    {
+        "_id": "phone6",
+        "name": "Xperia Z5 Premium",
+        "description": "Only phone with 4k display",
+        "category": "phone",
+        "image_url": "/images/xperia_z5.jpg",
+        "price": 56000,
+        "feedback": [{
+            "comment": "Awesome display. ",
+            "rating": "5",
+            "user_name": "Anupam",
+            "added_date": "05-21-2016"
+        }],
+        "isDeal": true,
+        "deals": [{
+            "deal_date": "05-19-2017",
+            "deal_name": "Super Offer",
+            "deal_discount": "80"
+        }],
+        "avg_rating": 0
+    }
+
+    ];
+    products.forEach(function (product) {
+
+
+
+        new Product(product).save();
+
+
+
+
+    });
+
+
+    var users = [{
+        "_id": "sachin.lamba@gmail.com",
+        "username": "Sachin Lamba",
+        "mobile_no": "9999278030",
+        "password": "Lamba@123",
+        "card_details": [{
+            "card_type": "Credit",
+            "card_number": "2131312312121233",
+            "expiration_date": {
+                "month": "03",
+                "year": "2019"
+            }
+        },
+        {
+            "card_type": "Debit",
+            "card_number": "12312312312312123",
+            "expiration_date": {
+                "month": "12",
+                "year": "2022"
+            }
+        }
+        ],
+        "address": [{
+            "line1": "abc",
+            "line2": "def",
+            "city": "ghi",
+            "state": "Delhi",
+            "zipcode": "110039"
+        },
+        {
+            "line1": "pqr",
+            "line2": "pqrs",
+            "city": "vwx",
+            "state": "Talengana",
+            "zipcode": "550055"
+        }
+        ],
+        "wishlist": [],
+        "cart": [],
+        "order_history": [
+			{
+			  "order_id":"1495414702066",
+			  "order_date":"",
+			  "order_status":"In Transit",
+			  "shipping_address":{
+				"line1":"pqr",
+				"line2":"pqr",
+				"city":"vwx",
+				"state":"Talengana",
+				"zipcode":"550055"
+			  },
+			  "payment_detail":{
+				"card_type":"Debit",
+				"card_number":"12312312312312123",
+				"expiration_date":{
+				  "month":"12",
+				  "year":"2012"
+				}
+			  },
+			  "product_details":[
+				  {
+					"product": "Lenovo Thinkpad",
+					"quantity":"1",
+					"unit_price":"55000"
+				  },
+				  {
+					"product": "iphone 6",
+					"quantity":"1",
+					"unit_price":"18000"
+				  }
+			  ]
+			},
+			{
+			  "order_id":"1295014702066",
+			  "order_date":"",
+			  "order_status":"Delivered",
+			  "shipping_address":{
+				"line1":"pqr",
+				"line2":"pqr",
+				"city":"vwx",
+				"state":"Talengana",
+				"zipcode":"550055"
+			  },
+			  "payment_detail":{
+				"card_type":"Debit",
+				"card_number":"12312312312312123",
+				"expiration_date":{
+				  "month":"12",
+				  "year":"2012"
+				}
+			  },
+			  "product_details":[
+				  {
+					"product": "iphone 6",
+					"quantity":"1",
+					"unit_price":"18000"
+				  },
+				  {
+					"product": "Samsung s8",
+					"quantity":"1",
+					"unit_price":"70000"
+				  }
+			  ]
+			},
+			{
+			  "order_id":"1495014702066",
+			  "order_date":"",
+			  "order_status":"Delivered",
+			  "shipping_address":{
+				"line1":"pqr",
+				"line2":"pqr",
+				"city":"vwx",
+				"state":"Talengana",
+				"zipcode":"550055"
+			  },
+			  "payment_detail":{
+				"card_type":"Debit",
+				"card_number":"12312312312312123",
+				"expiration_date":{
+				  "month":"12",
+				  "year":"2012"
+				}
+			  },
+			  "product_details":[
+				  {
+					"product": "macbook air",
+					"quantity":"2",
+					"unit_price":"80000"
+				  }
+			  ]
+			}
+		]
+    },
+    {
+        "_id": "sachin.gupta03@gmail.com",
+        "username": "Sachin Gupta",
+        "mobile_no": "9999999999",
+        "password": "gupta",
+        "card_details": [{
+            "card_type": "Credit",
+            "card_number": "1234567890123456",
+            "expiration_date": {
+                "month": "08",
+                "year": "2017"
+            }
+        },
+        {
+            "card_type": "Debit",
+            "card_number": "098765432109876",
+            "expiration_date": {
+                "month": "12",
+                "year": "2020"
+            }
+        }
+        ],
+        "address": [{
+            "line1": "abc",
+            "line2": "def",
+            "city": "ghi",
+            "state": "Delhi",
+            "zipcode": "110039"
+        },
+        {
+            "line1": "pqr",
+            "line2": "stu",
+            "city": "vwx",
+            "state": "Talengana",
+            "zipcode": "550055"
+        }
+        ],
+        "wishlist": [],
+        "cart": [],
+        "order_history": [],
+
+        "notification": ["Your order has been placed", "Your order has been delivered"]
+    }
+
+    ];
+
+    users.forEach(function (user) {
+        new User(user).save();
+    });
+});
+
+console.log('data stored successfully');
