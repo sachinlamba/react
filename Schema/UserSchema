@@ -1,0 +1,65 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var UserSchema = new Schema({
+  _id: String,
+  "username": String,
+  "mobile_no": Number,
+  "password": String,
+  "card_details":[
+    {
+      "card_type":String,
+      "card_number":Number,
+      "expiration_date":{
+        "month":Number,
+        "year":Number
+      }
+    }
+  ],
+  "address":[
+    {
+      "line1":String,
+      "line2":String,
+      "city":String,
+      "state":String,
+      "zipcode":Number
+    }
+  ],
+  "wishlist":[],
+  "cart":[
+    {
+      "product": String,
+      "quantity":Number
+    }
+  ],
+  "order_history":[
+      {
+      "order_id":String,
+      "order_date":Date,
+      "order_status":String,
+      "shipping_address":{
+        "line1":String,
+        "line2":String,
+        "city":String,
+        "state":String,
+        "zipcode":Number
+      },
+      "payment_detail":{
+        "card_type":String,
+        "card_number":Number,
+        "expiration_date":{
+          "month":Number,
+          "year":Number
+        }
+      },
+      "product_details":[{
+        "product": String,
+        "quantity":Number,
+        "unit_price":Number
+      }]
+    }
+  ],
+  notification:[]
+});
+
+module.exports=mongoose.model("UserSchema",UserSchema,"users");
