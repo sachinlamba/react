@@ -1,0 +1,242 @@
+var Constants = require('../Constants/Constants');
+import { browserHistory } from 'react-router';
+
+const UserReducer = (state = {
+  username: 'guest',
+  _id: "",
+  mobile_no: "",
+  password: "",
+  card_details: [ ],
+  address: [ ],
+  wishlist: [  ],
+  cart: [ ],
+  order_history: [ ],
+  notification: [ ]
+
+}
+  , action) => {
+  console.log('in user reducer');
+  switch (action.type) {
+    case Constants.SIGNUP:
+        console.log('Signing Up in reducer by: ' + action.data);
+
+
+
+
+        let new_user = state;
+        new_user.username = action.data.username
+        new_user._id = action.data.emailid
+        new_user.mobile_no = action.data.mobile_no
+        new_user.password = action.data.password
+        console.log('Signing Up in reducer by: ' + new_user);
+        return Object.assign({},state,new_user);
+
+
+    case Constants.LOGIN:
+        console.log('LOGIN FROM reducer by: '+ action.data);
+        return Object.assign({},state,action.data);
+
+	case Constants.ADD_TO_CART:
+        console.log('ADD_TO_CART FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+
+		let new_cart = state.cart;
+		let notif = state.notification;
+
+		let flag=false;
+		for (let i=0; i<new_cart.length;i++){
+			if(new_cart[i].product== action.data.pdtId){
+
+				let qty = parseInt(new_cart[i].quantity) + 1;
+				if (qty>4){
+						qty=4;
+				}
+				new_cart[i].quantity = qty.toString();
+
+				flag=true;
+				break;
+			}
+		}
+		if (flag==false){
+			notif.push (action.data.pdtId+' added to your cart');
+			new_cart.push({
+						  product: action.data.pdtId,
+						  quantity: "1"
+						});
+		}
+
+		if (action.data.username=='guest'){
+			localStorage.setItem('cart',JSON.stringify(new_cart))
+		}
+        return Object.assign({},state,{cart:new_cart,notification:notif});
+
+	case Constants.REMOVE_FROM_CART:
+		console.log('REMOVE_FROM_CART FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+		new_cart=[];
+		notif = state.notification;
+		notif.push (action.data.pdtId+' removed from your cart');
+
+		let old_cart = state.cart;
+		for (let i=0; i<old_cart.length;i++){
+			if(old_cart[i].product!= action.data.pdtId){
+				new_cart.push(old_cart[i])
+			}
+		}
+		if (action.data.username=='guest'){
+			localStorage.setItem('cart',JSON.stringify(new_cart))
+		}
+		return Object.assign({},state,{cart:new_cart,notification:notif});
+
+
+	case Constants.ADD_TO_WISHLIST:
+        console.log('ADD_TO_WISHLIST FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+		notif = state.notification;
+
+		let new_wishlist = state.wishlist;
+		flag=false;
+		for (let i=0; i<new_wishlist.length;i++){
+			if(new_wishlist[i].product== action.data.pdtId){
+				flag=true;
+				break;
+			}
+		}
+		if (flag==false){
+			notif.push (action.data.pdtId+' added to your wishlist');
+			new_wishlist.push({
+						  product: action.data.pdtId,
+						  quantity: "1"
+						});
+		}
+
+		if (action.data.username=='guest'){
+			//localStorage.setItem('wishlist',JSON.stringify(new_cart))
+		}
+        return Object.assign({},state,{wishlist:new_wishlist,notification:notif});
+
+    case Constants.LOGOUT:
+        console.log('LOGOUT FROM reducer : ');
+        var data = {
+          username: 'guest',
+          _id: "",
+          mobile_no: "",
+          password: "",
+          card_details: [ ],
+          address: [ ],
+          wishlist: [  ],
+          cart: [ ],
+          order_history: [ ],
+		  notification: [ ]
+        }
+        return Object.assign({},data);
+
+	case Constants.INCREASE_QTY:
+		console.log('INCREASE_QTY FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+		old_cart = state.cart;
+		for (let i=0; i<old_cart.length;i++){
+			if(old_cart[i].product== action.data.pdtId){
+
+				let qty=parseInt(old_cart[i].quantity) + 1;
+				if (qty>4){
+						qty=4;
+				}
+				old_cart[i].quantity = qty.toString();
+			}
+		}
+		if (action.data.username=='guest'){
+			localStorage.setItem('cart',JSON.stringify(old_cart))
+		}
+		return Object.assign({},state,{cart:old_cart});
+
+	case Constants.DECREASE_QTY:
+		console.log('DECREASE_QTY FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+		old_cart = state.cart;
+		for (let i=0; i<old_cart.length;i++){
+			if(old_cart[i].product== action.data.pdtId){
+
+				let qty=parseInt(old_cart[i].quantity) - 1;
+				if (qty==0){
+						qty=1;
+				}
+				old_cart[i].quantity = qty.toString();
+			}
+		}
+		if (action.data.username=='guest'){
+			localStorage.setItem('cart',JSON.stringify(old_cart))
+		}
+		return Object.assign({},state,{cart:old_cart});
+
+    case Constants.UPDATE_USER:
+
+        console.log('update user FROM reducer by: '+ JSON.stringify(action.data));
+
+        var user = state
+        console.log('update user FROM reducer by: '+ action.data);
+		    user.notification=[...user.notification ,'User details updated successfully'];
+
+        return Object.assign({},state,user);
+
+	case Constants.REMOVE_FROM_WISHLIST:
+		console.log('REMOVE_FROM_WISHLIST FROM reducer by: '+ action.data.username + ' prod '+ action.data.pdtId);
+		notif = state.notification;
+		notif.push (action.data.pdtId+' removed from your wishlist');
+
+		new_wishlist=[];
+		let old_wishlist = state.wishlist;
+		for (let i=0; i<old_wishlist.length;i++){
+			if(old_wishlist[i].product!= action.data.pdtId){
+				new_wishlist.push(old_wishlist[i])
+			}
+		}
+		return Object.assign({},state,{wishlist:new_wishlist,notification:notif});
+
+	case Constants.CANCEL_ORDER:
+		console.log('CANCEL_ORDER FROM reducer by: '+ action.data.username + ' prod '+ action.data.order_id);
+
+		notif = state.notification;
+		notif.push (action.data.order_id+' cancellation request submitted successfully');
+
+
+		let order_history = state.order_history;
+		for (let i=0; i<order_history.length;i++){
+			if(order_history[i].order_id== action.data.order_id){
+				order_history[i].order_status='Cancelled'
+			}
+		}
+		return Object.assign({},state,{order_history:order_history,notification:notif});
+
+	case Constants.RETURN_ORDER:
+		console.log('RETURN_ORDER FROM reducer by: '+ action.data.username + ' prod '+ action.data.order_id);
+
+		notif = state.notification;
+		notif.push (action.data.order_id+' return request submitted successfully');
+
+
+		order_history = state.order_history;
+		for (let i=0; i<order_history.length;i++){
+			if(order_history[i].order_id== action.data.order_id){
+				order_history[i].order_status='Return requested'
+			}
+		}
+		return Object.assign({},state,{order_history:order_history,notification:notif});
+
+	case Constants.BUY:
+        console.log('BUY FROM reducer by: '+ action.data.username + ' prod '+ action.data.order_history);
+		notif = state.notification;
+
+		let history = state.order_history;
+		history.push(action.data.order_history)
+		flag=false;
+		
+		if (flag==false){
+			notif.push ('Order with ID: '+action.data.order_history.order_id+' was placed successfully and will be delivered shortly');
+		}
+
+		
+        return Object.assign({},state,{order_history:history,notification:notif,cart:[]});
+
+
+    default:
+      return state;
+  }
+}
+
+export default UserReducer;
