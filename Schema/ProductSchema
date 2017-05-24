@@ -1,0 +1,26 @@
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var ProductSchema = new Schema({
+  _id: String,
+  name: String,
+  description: String,
+  category: String,
+  price:String,
+  image_url: String,
+  feedback: [{
+    comment: String,
+    rating: Number,
+    user_name: String,
+    added_date: Date
+  }],
+  isDeal:Boolean,
+  deals:[{
+    deal_date: Date,
+    deal_name: String,
+    deal_discount: Number
+  }],
+  avg_rating:Number
+});
+
+module.exports=mongoose.model("ProductSchema",ProductSchema,"products");
